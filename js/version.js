@@ -1,2 +1,2 @@
 // App version, shown to parents. Rewritten by tools/release.mjs together with sw.js.
-export const VERSION = '0.9.0';
+export const VERSION = '0.9.0-preview.1';
