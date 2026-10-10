@@ -153,7 +153,10 @@ function placeStartAndPapa(maze, rule, rng) {
     dist.forEach((d, i) => { if (i !== start && d >= FAR_RATIO * max) far.push(i); });
     return { start, papa: pick(far, rng) };
   }
-  // middle: papa in the centre box, the jaguar on the outer ring.
+  // middle: papa in the centre box, the jaguar on a FAR outer-ring cell. A random pair
+  // (papa, start) among all pairs whose BFS distance ≥ FAR_RATIO × the largest distance
+  // over ALL centre-box papas (owner, J2: a random ring cell gave paths shorter than step 5;
+  // the max per chosen papa was still too short).
   const box = centreBox(cols, rows);
   const centre = [], ring = [];
   for (let i = 0; i < cols * rows; i++) {
@@ -161,7 +164,14 @@ function placeStartAndPapa(maze, rule, rng) {
     if (c >= box.c0 && c <= box.c1 && r >= box.r0 && r <= box.r1) centre.push(i);
     if (isOuterRing(cols, rows, i)) ring.push(i);
   }
-  return { start: pick(ring, rng), papa: pick(centre, rng) };
+  const pairs = []; // [start, papa, distance]
+  for (const papa of centre) {
+    const { dist } = bfs(maze, papa);
+    for (const i of ring) pairs.push([i, papa, dist[i]]);
+  }
+  const max = Math.max(...pairs.map((p) => p[2]));
+  const [start, papa] = pick(pairs.filter((p) => p[2] >= FAR_RATIO * max), rng);
+  return { start, papa };
 }
 
 export function mazeKey(walls, start, papa) {

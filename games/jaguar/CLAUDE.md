@@ -21,6 +21,10 @@ Progress is saved by level `id` — never renumber. Mazes are made at play time 
 | 4–5 | 5×7, 5×8 | 0, 1 | far |
 | 6–8 | 5×9, 6×10, 6×12 | 2, 2, 3 | middle |
 
+`middle` (owner, J2): papa in the centre box; (papa, start) = a random pair among the
+pairs with BFS distance ≥ `FAR_RATIO` × the max over every centre-box papa and outer-ring
+cell. Path medians (200 seeds): step 5 = 16; steps 6/7/8 = 16/18/19.
+
 `deadEnds` and `path` ranges are MEASURED: the 10th–90th percentile of 200 seeded mazes
 per level, with the other parameters fixed. If you change `bias`, `loops` or the grid,
 measure again.

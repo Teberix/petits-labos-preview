@@ -54,6 +54,15 @@ test('maze: connected, exact loop count, ranges, papa rule — every level', () 
         const b = centreBox(level.cols, level.rows), c = maze.papa % level.cols, r = (maze.papa - c) / level.cols;
         assert.ok(c >= b.c0 && c <= b.c1 && r >= b.r0 && r <= b.r1, `${where}: papa in the centre`);
         assert.ok(isOuterRing(level.cols, level.rows, maze.start), `${where}: jaguar on the ring`);
+        // The pair is far: distance ≥ FAR_RATIO × the max over every (centre papa, ring cell).
+        let pairMax = 0;
+        for (let p = 0; p < cells; p++) {
+          const pc = p % level.cols, pr = (p - pc) / level.cols;
+          if (pc < b.c0 || pc > b.c1 || pr < b.r0 || pr > b.r1) continue;
+          const d = bfs(maze, p).dist;
+          for (let i = 0; i < cells; i++) if (isOuterRing(level.cols, level.rows, i)) pairMax = Math.max(pairMax, d[i]);
+        }
+        assert.ok(dist[maze.papa] >= FAR_RATIO * pairMax, `${where}: jaguar far from papa`);
       }
     }
   }
