@@ -1,0 +1,26 @@
+{
+  "$comment": "ONE level of jaguar (a parameter set; its mazes are made at play time by maze.js makeMaze). Dev-only (never precached). roundsPerPlay is a game constant (2), not level data. deadEnds / path are measured ranges (10th-90th percentile of 200 seeds).",
+  "type": "object",
+  "required": ["id", "difficulty", "cols", "rows", "bias", "loops", "papa", "deadEnds", "path", "hints"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "difficulty": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "cols": { "type": "integer", "minimum": 3, "maximum": 6 },
+    "rows": { "type": "integer", "minimum": 4, "maximum": 12 },
+    "bias": { "type": "number", "minimum": 0, "maximum": 1 },
+    "loops": { "type": "integer", "minimum": 0, "maximum": 4 },
+    "papa": { "enum": ["far", "middle"] },
+    "deadEnds": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "integer", "minimum": 0 } },
+    "path": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "integer", "minimum": 2 } },
+    "hints": {
+      "type": "object",
+      "required": ["deadEnds", "walk"],
+      "additionalProperties": false,
+      "properties": {
+        "deadEnds": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "integer", "minimum": 1 } },
+        "walk": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 1 } }
+      }
+    }
+  }
+}

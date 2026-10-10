@@ -37,7 +37,7 @@ They are quick and the games are too easy for them.
   alternative or an evolution, ideally together with the new-engine games. To design
   as part of that big update; nothing to change before then.
 - **Engine:** levels in `levels.json` + `solver.mjs`, checked by the gate (see "Level
-  data" in `CLAUDE.md`). Games 8–10 keep `levels.js` (owner, 2026-10-01).
+  data" in `CLAUDE.md`). Games 8–9 keep `levels.js` (owner, 2026-10-01); game 10 uses the new engine (owner, 2026-10-11).
 - **Review (owner, 2026-10-01):** until game 10, each checkpoint (proposal, art
   contact sheet, first playable, final gate report) goes to `docs/mailbox/` for the
   owner's external reviewer. After game 10: add a read-only "project-manager" subagent
