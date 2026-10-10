@@ -14,7 +14,7 @@ owner confirms it was playtested with the kids.
 | 7 | Qui mange qui ? | food chains, habitats | DONE |
 | 8 | Formes à tourner (was Formes & Silhouettes) | shapes, rotation, spatial reasoning | DONE |
 | 9 | Duo Mémoire | memory, turn-taking, 2 players on one device | DONE |
-| 10 | Le Jardin | plant life cycle, grows over real days | planned |
+| 10 | Le Petit Jaguar | mazes, planning a path, spatial reasoning | planned |
 | 11 | Les Tubes Arc-en-ciel | colour sorting in tubes, planning ahead | TODO |
 | 12 | La Pâtisserie | match-3 swaps, spotting patterns | TODO |
 | 13 | Les Paires | pair matching on stacked tiles, visual search | TODO |
