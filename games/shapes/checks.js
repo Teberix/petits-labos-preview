@@ -268,6 +268,7 @@ export default {
 
   worstCases: [
     {
+      once: true, // behaviour check: 1 size
       name: 'path: 1 wrong drop on 2 pieces per round → skill unchanged (strongest hint)',
       async setup(page, kit) {
         await playClueRounds(page, kit);

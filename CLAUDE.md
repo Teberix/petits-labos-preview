@@ -208,6 +208,9 @@ node tools/gate.mjs --only unit,privacy
   otherwise; difficulty steps 1…N with no hole → FAIL otherwise; if `solver.mjs` exists,
   every level must be solvable → FAIL otherwise; then a difficulty table (id,
   difficulty, minMoves) — information only.
+- Layout jobs (one game × one size) run 3 at a time; `--jobs 1` runs them one by one (use it if
+  a run looks flaky). A worst case with `once: true` runs at the first size only: use it for
+  behaviour checks (they play and assert saved data), never for a screen whose layout matters.
 - Never hangs: 10 s per Playwright action, 30 s per page load, 60 s per worst case /
   `offline()` (constants in `check-kit.mjs`). Failures show the page's JS errors; a worst
   case that times out or hits a JS error is skipped at the remaining sizes.

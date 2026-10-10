@@ -2,7 +2,8 @@
 // (3 with --quick: 360x640, 640x360, 1366x657 — for build steps).
 // Without --game, the shared screens too (album, "Mon pré", the reward reveal…:
 // js/screens/checks.js, same format as a game's checks.js; owner, 2026-10-05).
-//   node tools/check-layout.mjs [--game <id>] [--quick]
+//   node tools/check-layout.mjs [--game <id>] [--quick] [--jobs <n>]   (n parallel jobs, default 3)
+// A worst case with `once: true` runs at the first size only (behaviour checks).
 // Fails on: page scroll, touch targets < 64px / off-screen / overlapping, grid cells
 // smaller than the game's minCell. Boxes are measured with offsetTop/offsetWidth
 // (layout boxes, not animated/transformed ones) after finite animations are finished.
@@ -98,49 +99,69 @@ export async function checkLayout(args = []) {
   }
 
   const sizes = sizesFor(args); // 7 sizes, or 3 with --quick
+  // Parallel runs (owner, 2026-10-11: the full gate took 45 min). Each job = one suite at
+  // one size, in its own browser context; JOBS of them run at the same time.
+  // --jobs 1 = the old one-at-a-time order (use it if a run looks flaky).
+  const jobsArg = args.indexOf('--jobs');
+  const JOBS = Math.max(1, Number(jobsArg >= 0 ? args[jobsArg + 1] : 3) || 3);
   const server = await startServer();
   const browser = await chromium.launch();
   let screens = 0;
-  try {
-    for (const { id, checks } of suites) {
-      // Progress line, so a slow run isn't silent.
-      console.log(`  … layout: ${id} (${checks.worstCases.length} worst cases × ${sizes.length} sizes)`);
-      // A worst case that timed out, or broke on a JS error, would fail the same way at
-      // every size: try it only once. (Other setup failures can depend on the size.)
-      const broken = new Set();
-      for (const size of sizes) {
-        const context = await newContext(browser, size);
-        for (const wc of checks.worstCases) {
-          if (broken.has(wc)) continue;
-          const page = await context.newPage();
-          const errors = watchErrors(page);
-          const where = `${id} · ${wc.name} · ${size.name}`;
-          try {
-            await page.goto(`${server.base}?nosw`);
-            await withTimeout(wc.setup(page, kit), STEP_TIMEOUT, 'setup');
-            await kit.settle(page);
-            const problems = await page.evaluate(measure, {
-              touch: [...SHELL_TOUCH, ...checks.touch], cells: checks.cells, minCell: checks.minCell ?? 0, minTouch: MIN_TOUCH,
-              pageScroll: wc.pageScroll === true,
-            });
-            problems.push(...errors);
-            screens++;
-            if (problems.length) {
-              await page.screenshot({ path: screenshotPath(id, wc.name, size.name) });
-              failures.push(...problems.map((p) => `${where}: ${p}`));
-            }
-          } catch (err) {
-            const skip = err.timedOut || errors.some((e) => e.startsWith('page error'));
-            if (skip) broken.add(wc);
-            const skipped = skip ? ' (other sizes skipped)' : '';
-            failures.push(`${where}: setup failed — ${describeFailure(err, errors)}${skipped}`);
-            await page.screenshot({ path: screenshotPath(id, wc.name, size.name, 'error') }).catch(() => {});
+
+  // One suite at one size. A worst case marked `once: true` (a behaviour check: it plays
+  // and asserts saved data; its screen is not a layout case of its own) runs at the first
+  // size only. A worst case that timed out or broke on a JS error is skipped at the other
+  // sizes (it would fail the same way).
+  async function runJob({ id, checks, broken }, size) {
+    const context = await newContext(browser, size);
+    try {
+      for (const wc of checks.worstCases) {
+        if (broken.has(wc)) continue;
+        if (wc.once && size !== sizes[0]) continue;
+        const page = await context.newPage();
+        const errors = watchErrors(page);
+        const where = `${id} · ${wc.name} · ${size.name}`;
+        try {
+          await page.goto(`${server.base}?nosw`);
+          await withTimeout(wc.setup(page, kit), STEP_TIMEOUT, 'setup');
+          await kit.settle(page);
+          const problems = await page.evaluate(measure, {
+            touch: [...SHELL_TOUCH, ...checks.touch], cells: checks.cells, minCell: checks.minCell ?? 0, minTouch: MIN_TOUCH,
+            pageScroll: wc.pageScroll === true,
+          });
+          problems.push(...errors);
+          screens++;
+          if (problems.length) {
+            await page.screenshot({ path: screenshotPath(id, wc.name, size.name) });
+            failures.push(...problems.map((p) => `${where}: ${p}`));
           }
-          await page.close();
+        } catch (err) {
+          const skip = err.timedOut || errors.some((e) => e.startsWith('page error'));
+          if (skip) broken.add(wc);
+          const skipped = skip ? ' (other sizes skipped)' : '';
+          failures.push(`${where}: setup failed — ${describeFailure(err, errors)}${skipped}`);
+          await page.screenshot({ path: screenshotPath(id, wc.name, size.name, 'error') }).catch(() => {});
         }
-        await context.close();
+        await page.close();
       }
+    } finally {
+      await context.close();
     }
+  }
+
+  try {
+    const queue = [];
+    for (const suite of suites) {
+      const once = suite.checks.worstCases.filter((wc) => wc.once).length;
+      console.log(`  … layout: ${suite.id} (${suite.checks.worstCases.length} worst cases × ${sizes.length} sizes${once ? `, ${once} at 1 size` : ''})`);
+      suite.broken = new Set();
+      for (const size of sizes) queue.push([suite, size]);
+    }
+    console.log(`  … layout: ${queue.length} jobs, ${JOBS} at a time`);
+    const worker = async () => {
+      for (let next = queue.shift(); next; next = queue.shift()) await runJob(...next);
+    };
+    await Promise.all(Array.from({ length: JOBS }, worker));
   } finally {
     await browser.close();
     await server.stop();

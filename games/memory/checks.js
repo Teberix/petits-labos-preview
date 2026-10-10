@@ -235,6 +235,7 @@ export default {
     },
     {
       // One duo play to the end: +2 stars for EACH profile, the opener's skill unchanged.
+      once: true, // behaviour check: 1 size
       name: 'duo: play to the end → party screen, +2 stars each, skill unchanged',
       async setup(page, kit) {
         await page.waitForSelector('.profile-tile');
@@ -250,6 +251,7 @@ export default {
     },
     {
       // Leaving during the 1st reveal must not lose a star: both profiles still get +2.
+      once: true, // behaviour check: 1 size
       name: 'duo: leave during the 1st reveal → both profiles still +2 stars',
       async setup(page, kit) {
         await page.waitForSelector('.profile-tile');
@@ -275,16 +277,19 @@ export default {
       },
     },
     {
+      once: true, // behaviour check: 1 size
       name: 'path a: clean ▶ from skill 1 → skill 2',
       async setup(page, kit) { await playPath(page, kit, null, [], 2, 'clean ▶'); },
     },
     {
       // Strongest hint, not the sum: 2 misses on ONE pair = 'clue' → skill stays.
+      once: true, // behaviour check: 1 size
       name: "path b: 2 misses on the same pair per round → 'clue', skill stays 2",
       async setup(page, kit) { await playPath(page, kit, 2, [[0, 2]], 2, 'same pair'); },
     },
     {
       // 1 miss on each of 2 pairs = 'none' per pair → skill goes up.
+      once: true, // behaviour check: 1 size
       name: "path c: 1 miss on 2 different pairs per round → 'none', skill 3",
       async setup(page, kit) { await playPath(page, kit, 2, [[0, 1], [1, 1]], 3, 'two pairs'); },
     },

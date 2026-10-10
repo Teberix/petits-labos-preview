@@ -3,6 +3,7 @@
 //   node tools/gate.mjs --game robot    one game only: its unit tests, levels, layout, offline
 //   node tools/gate.mjs --game robot --quick   … with layout at 3 sizes (build steps)
 //   node tools/gate.mjs --only unit,privacy   just some checks (unit, privacy, levels, layout, offline)
+//   add --jobs <n> to run n layout jobs at a time (default 3; --jobs 1 = one at a time)
 // levels = level-based games only (games/<id>/levels.json): schema + solver + no gap in
 // the difficulty steps; it also prints a difficulty table (information).
 // Prints one line per check (+ its problems) and exits with code 1 if anything failed.
