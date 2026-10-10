@@ -7,6 +7,6 @@
     {"id":4,"difficulty":4,"cols":5,"rows":7,"bias":0.4,"loops":0,"papa":"far","deadEnds":[6,10],"path":[13,21],"hints":{"deadEnds":[3,5],"walk":[3,5]}},
     {"id":5,"difficulty":5,"cols":5,"rows":8,"bias":0.5,"loops":1,"papa":"far","deadEnds":[6,11],"path":[13,22],"hints":{"deadEnds":[3,5],"walk":[3,5]}},
     {"id":6,"difficulty":6,"cols":5,"rows":9,"bias":0.5,"loops":2,"papa":"middle","deadEnds":[6,11],"path":[12,21],"hints":{"deadEnds":[4,7],"walk":[3,5]}},
-    {"id":7,"difficulty":7,"cols":6,"rows":10,"bias":0.6,"loops":2,"papa":"middle","deadEnds":[11,16],"path":[13,24],"hints":{"deadEnds":[4,7],"walk":[3,5]}},
-    {"id":8,"difficulty":8,"cols":6,"rows":12,"bias":0.7,"loops":3,"papa":"middle","deadEnds":[13,19],"path":[14,24],"hints":{"deadEnds":[4,7],"walk":[3,5]}}
+    {"id":7,"difficulty":7,"cols":6,"rows":9,"bias":0.6,"loops":2,"papa":"middle","deadEnds":[10,14],"path":[12,21],"hints":{"deadEnds":[4,7],"walk":[3,5]}},
+    {"id":8,"difficulty":8,"cols":6,"rows":10,"bias":0.7,"loops":3,"papa":"middle","deadEnds":[10,16],"path":[13,22],"hints":{"deadEnds":[4,7],"walk":[3,5]}}
   ]}

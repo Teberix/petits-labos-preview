@@ -19,11 +19,11 @@ Progress is saved by level `id` — never renumber. Mazes are made at play time 
 |---|---|---|---|
 | 1–3 | 3×4, 4×5, 4×6 | 0 | far |
 | 4–5 | 5×7, 5×8 | 0, 1 | far |
-| 6–8 | 5×9, 6×10, 6×12 | 2, 2, 3 | middle |
+| 6–8 | 5×9, 6×9, 6×10 | 2, 2, 3 | middle |
 
 `middle` (owner, J2): papa in the centre box; (papa, start) = a random pair among the
 pairs with BFS distance ≥ `FAR_RATIO` × the max over every centre-box papa and outer-ring
-cell. Path medians (200 seeds): step 5 = 16; steps 6/7/8 = 16/18/19.
+cell. Path medians (200 seeds): step 5 = 16; steps 6/7/8 = 16/16/17.
 
 `deadEnds` and `path` ranges are MEASURED: the 10th–90th percentile of 200 seeded mazes
 per level, with the other parameters fixed. If you change `bias`, `loops` or the grid,
@@ -39,7 +39,7 @@ measure again.
   with the hug.
 - **Landscape turns the GRID** (cols and rows swap in the layout), never the art: the
   jaguar and papa always stand upright.
-- **Touch-target exception:** maze cells may be 44 px (`minCell` 44). The jaguar's hit box
+- **Touch-target exception:** maze cells may be 40 px (`minCell` 40; owner, J2). The jaguar's hit box
   stays ≥ 64 px (it may be larger than its cell).
 
 ## Files
@@ -54,7 +54,7 @@ measure again.
 
 ## Layout
 J2 builds it. Portrait: cols × rows as stored. Landscape: swap cols and rows in the grid
-layout only. Sizes: 360×640 and 640×360 set the smallest cell (44 px).
+layout only. Sizes: 360×640 and 640×360 set the smallest cell (40 px).
 
 ## Playtest history
 None yet.

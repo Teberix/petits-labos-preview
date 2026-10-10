@@ -12,6 +12,7 @@ import balance from './balance/meta.js';
 import food from './food/meta.js';
 import shapes from './shapes/meta.js';
 import memory from './memory/meta.js';
+import jaguar from './jaguar/meta.js';
 
 export const GAMES = [
   { ...potion, load: () => import('./potion/potion.js') },
@@ -22,4 +23,5 @@ export const GAMES = [
   { ...food, load: () => import('./food/food.js') },
   { ...shapes, load: () => import('./shapes/shapes.js') },
   { ...memory, load: () => import('./memory/memory.js') },
+  { ...jaguar, load: () => import('./jaguar/jaguar.js') },
 ];
