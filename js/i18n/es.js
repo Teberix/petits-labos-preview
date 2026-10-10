@@ -10,6 +10,9 @@ export default {
   back: 'Volver',
   changePlayer: 'Cambiar de jugador',
   parentHold: 'Padres: mantener 3 segundos',
+  parentWrong: 'Responde para entrar. ¡Inténtalo otra vez!',
+  parentErase: 'Borrar',
+  parentCancel: 'Cancelar',
 
   // Parent area
   parentTitle: 'Zona de padres',

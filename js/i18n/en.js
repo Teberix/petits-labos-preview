@@ -10,6 +10,9 @@ export default {
   back: 'Back',
   changePlayer: 'Change player',
   parentHold: 'Parents: hold for 3 seconds',
+  parentWrong: 'Answer to enter. Try again!',
+  parentErase: 'Erase',
+  parentCancel: 'Cancel',
 
   // Parent area
   parentTitle: 'Parents',

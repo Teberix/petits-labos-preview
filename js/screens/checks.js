@@ -108,9 +108,7 @@ async function reveal(page, kit, kind, unlocked) {
 // The parent screen (the 3 s hold on the gate button), then the reset confirm of `which`.
 async function resetConfirm(page, kit, which) {
   await kit.tap(page, page.locator('.profile-tile').first());
-  await page.waitForSelector('.gate-btn');
-  await page.locator('.gate-btn').dispatchEvent('pointerdown', { pointerId: 1, isPrimary: true });
-  await page.waitForSelector('.parent-body', { timeout: 8000 });
+  await passGate(page);
   if (which === 'profile') {
     await kit.tap(page, page.locator('.profile-row .btn').first());
     await kit.tap(page, page.locator('.reset-btn'));
@@ -137,15 +135,30 @@ async function fakePathGame(page, kit, rounds = 0) {
 
 // The parent screen, through the 3 s gate (from the hub).
 async function openParent(page) {
+  await passGate(page);
+}
+
+// Type `digits` on the gate keypad (a key press = a click on the button).
+async function typeKeys(page, digits) {
+  for (const d of digits) await page.locator(`.pg-key[data-key="${d}"]`).dispatchEvent('click');
+}
+
+// Hold the gate button 3 s, wait for the question, then solve it. The answer is NOT in
+// the DOM: read a and b from the question text ("23 × 7 = ?") and multiply here.
+async function passGate(page) {
   await page.waitForSelector('.gate-btn');
   await page.locator('.gate-btn').dispatchEvent('pointerdown', { pointerId: 1, isPrimary: true });
+  await page.waitForSelector('.pg-question', { timeout: 8000 });
+  const [, a, b] = (await page.locator('.pg-question').textContent()).match(/(\d+)\s*×\s*(\d+)/);
+  await typeKeys(page, String(a * b));
+  await page.locator('.pg-key[data-key="ok"]').dispatchEvent('click');
   await page.waitForSelector('.parent-body', { timeout: 8000 });
 }
 
 export default {
   // (placed meadow items may overlap each other by design: not listed; their 64px
   // minimum is CSS, min-width on .scene-item)
-  touch: ['.path-play', '.path-free', 'button.sticker-spot', '.scene-card', '.game-tile', 'button.world-tile', '.parent-body .btn'],
+  touch: ['.path-play', '.path-free', 'button.sticker-spot', '.scene-card', '.game-tile', 'button.world-tile', '.parent-body .btn', '.pg-key', '.pg-cancel'],
   worstCases: [
     // The hub and the album are lists: on a phone they scroll down (pageScroll).
     { name: 'hub, album button wiggling (new item)', pageScroll: true, async setup(page, kit) {
@@ -221,6 +234,17 @@ export default {
       await kit.tap(page, page.locator('.top-bar button').first());
       await kit.tap(page, page.locator('.game-tile').last());
       await page.waitForSelector('.path-stone');
+    } },
+    // The parent gate, step 2: question + keypad, a 3-digit answer typed and the "wrong" message.
+    { name: 'parent gate, keypad: 3 digits typed + wrong-answer message', async setup(page, kit) {
+      await kit.tap(page, page.locator('.profile-tile').first());
+      await page.waitForSelector('.gate-btn');
+      await page.locator('.gate-btn').dispatchEvent('pointerdown', { pointerId: 1, isPrimary: true });
+      await page.waitForSelector('.pg-question', { timeout: 8000 });
+      await typeKeys(page, '999'); // never right (max answer is 261)
+      await page.locator('.pg-key[data-key="ok"]').dispatchEvent('click');
+      await typeKeys(page, '999');
+      await page.waitForFunction(() => document.querySelector('.pg-msg')?.textContent);
     } },
     { name: 'parent, edit profile: level map switch + reset difficulty', pageScroll: true, async setup(page, kit) {
       await fakePathGame(page, kit, 5);
