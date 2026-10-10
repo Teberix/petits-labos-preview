@@ -10,7 +10,7 @@ export default {
   back: 'Back',
   changePlayer: 'Change player',
   parentHold: 'Parents: hold for 3 seconds',
-  parentWrong: 'Answer to enter. Try again!',
+  parentWrong: 'Not quite. Here is another one.',
   parentErase: 'Erase',
   parentCancel: 'Cancel',
 

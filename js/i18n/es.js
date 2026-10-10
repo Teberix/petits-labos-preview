@@ -10,7 +10,7 @@ export default {
   back: 'Volver',
   changePlayer: 'Cambiar de jugador',
   parentHold: 'Padres: mantener 3 segundos',
-  parentWrong: 'Responde para entrar. ¡Inténtalo otra vez!',
+  parentWrong: 'No es correcto. Aquí va otra cuenta.',
   parentErase: 'Borrar',
   parentCancel: 'Cancelar',
 
