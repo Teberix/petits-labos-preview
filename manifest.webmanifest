@@ -1,13 +1,13 @@
 {
-  "id": "./",
-  "name": "Petits Labos",
-  "short_name": "Petits Labos",
+  "id": "./preview",
+  "name": "Petits Labos · test",
+  "short_name": "PL test",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#FFF7EC",
-  "theme_color": "#6C4AB6",
+  "theme_color": "#D9480F",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
