@@ -14,7 +14,7 @@
 // All URLs are relative to this file, so the app works under any sub-path
 // (e.g. https://<user>.github.io/petits-labos/).
 
-const VERSION = '0.13.0';
+const VERSION = '0.14.0-preview.27';
 // The live app (/petits-labos/) and the preview (/petits-labos-preview/) are on the SAME
 // origin, so they share Cache Storage. Each one's caches are named after its own scope,
 // so cleaning up old versions never deletes the other app's cache (pwa-guardian,
